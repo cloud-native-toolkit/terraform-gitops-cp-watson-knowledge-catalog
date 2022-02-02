@@ -1,0 +1,11 @@
+name: gitops-cp-watson-knowledge-catalog
+type: gitops
+description: >-
+  Module to populate a gitops repo with the resources to provision
+  cp-watson-knowledge-catalog
+tags:
+  - tools
+  - gitops
+versions: []
+softwareProvider: ibm-cp
+id: github.com/cloud-native-toolkit/terraform-gitops-cp-watson-knowledge-catalog
