@@ -1,5 +1,6 @@
 locals {
   name          = "terraform-gitops-cp-watson-knowledge-catalog"
+  bin_dir       = module.setup_clis.bin_dir
   prerequisites_name = "ibm-cpd-wkc-prereqs"
   prerequisites_chart_dir = "${path.module}/charts/${local.prerequisites_name}"
   prerequisites_yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/${local.prerequisites_name}"
