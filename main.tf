@@ -91,6 +91,35 @@ resource null_resource setup_prerequisites_gitops {
   }
 }
 
+module "gitops_sccs" {
+  source = "github.com/cloud-native-toolkit/terraform-gitops-sccs.git?ref=v1.2.3"
+
+  depends_on = [null_resource.setup_prerequisites_gitops]
+
+  gitops_config = var.gitops_config
+  git_credentials = var.git_credentials
+  namespace = var.namespace
+  service_account = var.service_account_name
+  sccs = var.sccs
+  server_name = var.server_name
+  group = var.scc_group
+}
+
+module "gitops_rbac" {
+  source = "github.com/cloud-native-toolkit/terraform-gitops-rbac.git?ref=v1.7.1"
+  depends_on = [null_resource.setup_prerequisites_gitops]
+
+  gitops_config             = var.gitops_config
+  git_credentials           = var.git_credentials
+  service_account_namespace = var.cpd_namespace
+  service_account_name      = var.service_account_name
+  namespace                 = var.cpd_namespace
+  label                     = var.rbac_label
+  rules                     = var.rbac_rules
+  server_name               = var.server_name
+  cluster_scope             = var.rbac_cluster_scope
+}
+
 resource null_resource create_operator_yaml {
 
   triggers = {
@@ -191,33 +220,4 @@ resource null_resource setup_instance_gitops {
       GITOPS_CONFIG   = self.triggers.gitops_config
     }
   }
-}
-
-module "gitops_sccs" {
-  source = "github.com/cloud-native-toolkit/terraform-gitops-sccs.git?ref=v1.2.3"
-
-  depends_on = [null_resource.setup_instance_gitops]
-
-  gitops_config = var.gitops_config
-  git_credentials = var.git_credentials
-  namespace = var.namespace
-  service_account = var.service_account_name
-  sccs = var.sccs
-  server_name = var.server_name
-  group = var.scc_group
-}
-
-module "gitops_rbac" {
-  source = "github.com/cloud-native-toolkit/terraform-gitops-rbac.git?ref=v1.7.1"
-  depends_on = [null_resource.gitops_sccs]
-
-  gitops_config             = var.gitops_config
-  git_credentials           = var.git_credentials
-  service_account_namespace = var.cpd_namespace
-  service_account_name      = var.service_account_name
-  namespace                 = var.cpd_namespace
-  label                     = var.rbac_label
-  rules                     = var.rbac_rules
-  server_name               = var.server_name
-  cluster_scope             = var.rbac_cluster_scope
 }
