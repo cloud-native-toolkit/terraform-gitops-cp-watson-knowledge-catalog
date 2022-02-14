@@ -194,7 +194,7 @@ resource null_resource setup_instance_gitops {
 }
 
 module "gitops_sccs" {
-  source = "github.com/cloud-native-toolkit/terraform-gitops-sccs.git"
+  source = "github.com/cloud-native-toolkit/terraform-gitops-sccs.git?ref=v1.2.3"
 
   depends_on = [null_resource.setup_instance_gitops]
 
@@ -208,7 +208,7 @@ module "gitops_sccs" {
 }
 
 module "gitops_rbac" {
-  source = "github.com/cloud-native-toolkit/terraform-gitops-rbac.git"
+  source = "github.com/cloud-native-toolkit/terraform-gitops-rbac.git?ref=v1.7.1"
   depends_on = [null_resource.gitops_sccs]
 
   gitops_config             = var.gitops_config
