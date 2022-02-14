@@ -1,4 +1,4 @@
-name: gitops-cp-watson-knowledge-catalog
+name: terraform-gitops-cp-watson-knowledge-catalog
 type: gitops
 description: >-
   Module to populate a gitops repo with the resources to provision
@@ -6,6 +6,11 @@ description: >-
 tags:
   - tools
   - gitops
+  - wkc
+  - watson knowledge catalog
+  - cloud pak for data
+  - cpd
+  - cp4d
 versions:
   - platforms:
       - kubernetes

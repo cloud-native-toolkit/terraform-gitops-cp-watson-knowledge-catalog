@@ -5,6 +5,11 @@ GIT_TOKEN=$(cat git_token)
 
 export KUBECONFIG=$(cat .kubeconfig)
 NAMESPACE=$(cat .namespace)
+SUBSCRIPTION_CHART=$(jq -r '.sub_chart // "sub_chart"' gitops-output.json)
+SUBSCRIPTION_NAME=$(jq -r '.sub_name // "sub_name"' gitops-output.json)
+INSTANCE_NAME=$(jq -r '.instance_name // "instance_name"' gitops-output.json)
+OPERATOR_NAMESPACE=$(jq -r '.operator_namespace // "operator_namespace"' gitops-output.json)
+CPD_NAMESPACE=$(jq -r '.cpd_namespace // "cpd_namespace"' gitops-output.json)
 COMPONENT_NAME=$(jq -r '.name // "my-module"' gitops-output.json)
 BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
 SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
@@ -50,21 +55,18 @@ else
   sleep 30
 fi
 
-DEPLOYMENT="${COMPONENT_NAME}-${BRANCH}"
-count=0
-until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
-  echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
-  count=$((count + 1))
+CSV=$(kubectl get sub -n ${NAMESPACE} ${SUBSCRIPTION_NAME} -o jsonpath='{.status.installedCSV} {"\n"}')
+SUB_STATUS=0
+while [ $SUB_STATUS !=1 ]; do
   sleep 15
+  SUBSTATUS=$(kubectl get deployments -n ${NAMESPACE} -l olm.owner=${CSV} -o jsonpath="{.items[0].status.availableReplicas} {'\n'}")
+  echo "Waiting for subscription ${SUBSCRIPTION_NAME} to be ready in ${OPERATOR_NAMESPACE}"
 done
 
-if [[ $count -eq 20 ]]; then
-  echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
-  kubectl get all -n "${NAMESPACE}"
-  exit 1
-fi
+sleep 30
+INSTANCE_STATUS=$(kubectl get WKC ${INSTANCE_NAME} -o jsonpath='{.status.wkcStatus} {"\n"}')
 
-kubectl rollout status "deployment/${DEPLOYMENT}" -n "${NAMESPACE}" || exit 1
+echo "Watson Knowledge Catalog WKC/${INSTANCE_NAME} is ${INSTANCE_STATUS}"
 
 cd ..
 rm -rf .testrepo

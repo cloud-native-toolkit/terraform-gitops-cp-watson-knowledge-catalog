@@ -1,0 +1,14 @@
+apiVersion: wkc.cpd.ibm.com/v1beta1
+kind: WKC
+metadata:
+  name: {{ .Values.name }}     # This is the recommended name, but you can change it
+  namespace: {{ .Values.cpd_namespace }}     # Replace with the project where you will install Watson Knowledge Catalog
+spec:
+  license:
+    accept: true
+    license: {{ .Values.license }}     # Specify the license you purchased.
+  version: {{ .Values.version }}
+  storageVendor: {{ .Values.storageVendor}}
+  wkc_db2u_set_kernel_params: {{ .Values.wkc_set_kernel_params }}
+  iis_db2u_set_kernel_params: {{ .Values.iis_set_kernel_params }}
+  # install_wkc_core_only: true     # To install the core version of the service, remove the comment tagging from the beginning of the line.

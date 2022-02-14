@@ -79,3 +79,80 @@ variable "server_name" {
   description = "The name of the server"
   default     = "default"
 }
+
+variable "cluster_type" {
+  type        = string
+  description = "The cluster type (openshift or ocp3 or ocp4 or kubernetes)"
+  default     = "ocp4"
+}
+
+variable "cluster_ingress_hostname" {
+  type        = string
+  description = "Ingress hostname of the IKS cluster."
+  default     = ""
+}
+
+variable "tls_secret_name" {
+  type        = string
+  description = "The name of the secret containing the tls certificate values"
+  default     = ""
+}
+
+variable "catalog" {
+  type        = string
+  description = "The catalog source that should be used to deploy the operator"
+  default     = "ibm-operator-catalog"
+}
+
+variable "operator_namespace" {
+  type        = string
+  description = "operator namespace"
+  default     = "ibm-common-services"
+}
+
+variable "cpd_namespace" {
+  type        = string
+  description = "cpd namespace"
+  default     = "cpd-instance"
+}
+
+variable "sccs" {
+  type        = list(string)
+  description = "The list of sccs that should be generated for the service account (valid values are anyuid and privileged)"
+  default     = ["anyuid"]
+}
+
+variable "rbac_label" {
+  type        = string
+  description = "The name for RBAC rule"
+  default     = "wkc-iis-scc-rb"
+}
+
+variable "rbac_rules" {
+  type        = list(object({
+    apiGroups = list(string)
+    resources = list(string)
+    resourceNames = optional(list(string))
+    verbs     = list(string)
+  }))
+  description = "Rules for rbac rules"
+  default     = [{
+    apiGroups = ["security.openshift.io"]
+    resources = ["securitycontextconstraints"]
+    resourceNames = ["wkc-iis-scc"]
+    verbs = ["use"]
+  }]
+}
+
+variable "rbac_cluster_scope" {
+  type        = bool
+  description = "Flag indicating that RBAC should be created as ClusterRole and ClusterRoleBinding instead of Role and RoleBinding"
+  default     = true
+}
+
+variable "service_account_name" {
+  type        = string
+  description = "The name of the service account for wkc"
+  default     = "wkc-iis-sa"
+}
+

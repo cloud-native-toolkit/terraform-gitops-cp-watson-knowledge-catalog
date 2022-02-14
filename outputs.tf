@@ -2,7 +2,37 @@
 output "name" {
   description = "The name of the module"
   value       = local.name
-  depends_on  = [null_resource.setup_gitops]
+  depends_on  = [null_resource.setup_instance_gitops]
+}
+
+output "instance_name" {
+  description = "The name of the Watson Knowledge Catalog instance"
+  value       = local.instance_content.name
+  depends_on  = [null_resource.setup_instance_gitops]
+}
+
+output "sub_chart" {
+  description = "The name of the Watson Machine Learning chart"
+  value       = local.subscription_name
+  depends_on  = [null_resource.setup_instance_gitops]
+}
+
+output "sub_name" {
+  description = "The name of the Watson Machine Learning subscription"
+  value       = local.subscription_content.name
+  depends_on  = [null_resource.setup_instance_gitops]
+}
+
+output "operator_namespace" {
+  description = "The name of the operators namespace"
+  value       = var.operator_namespace
+  depends_on  = [null_resource.setup_instance_gitops]
+}
+
+output "cpd_namespace" {
+  description = "The name of the Cloud Pak for Data namespace"
+  value       = var.cpd_namespace
+  depends_on  = [null_resource.setup_instance_gitops]
 }
 
 output "branch" {
