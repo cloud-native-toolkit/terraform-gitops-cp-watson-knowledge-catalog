@@ -98,6 +98,12 @@ variable "cpd_namespace" {
   default     = "gitops-cp4d-instance"
 }
 
+variable "service_account_name" {
+  type        = string
+  description = "The name of the service account for wkc"
+  default     = "wkc-iis-sa"
+}
+
 variable "sccs" {
   type        = list(string)
   description = "The list of sccs that should be generated for the service account (valid values are anyuid and privileged)"
@@ -121,7 +127,7 @@ variable "rbac_rules" {
   default     = [{
     apiGroups = ["security.openshift.io"]
     resources = ["securitycontextconstraints"]
-    resourceNames = ["wkc-iis-scc"]
+    resourceNames = [var.cpd_namespace + "-" + var.service_account_name + "-" + var.sccs]
     verbs = ["use"]
   }]
 }
@@ -130,11 +136,5 @@ variable "rbac_cluster_scope" {
   type        = bool
   description = "Flag indicating that RBAC should be created as ClusterRole and ClusterRoleBinding instead of Role and RoleBinding"
   default     = true
-}
-
-variable "service_account_name" {
-  type        = string
-  description = "The name of the service account for wkc"
-  default     = "wkc-iis-sa"
 }
 

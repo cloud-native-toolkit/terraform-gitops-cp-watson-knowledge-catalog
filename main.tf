@@ -38,7 +38,7 @@ module setup_clis {
   source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
 }
 
-resource null_resource create_prerequisites_yaml {
+/*resource null_resource create_prerequisites_yaml {
   provisioner "local-exec" {
     command = "${path.module}/scripts/create-yaml.sh '${local.prerequisites_name}' '${local.prerequisites_yaml_dir}'"
   }
@@ -77,7 +77,7 @@ resource null_resource setup_prerequisites_gitops {
       GITOPS_CONFIG   = self.triggers.gitops_config
     }
   }
-}
+}*/
 
 module "gitops_sccs" {
   source = "github.com/cloud-native-toolkit/terraform-gitops-sccs.git?ref=v1.2.3"
