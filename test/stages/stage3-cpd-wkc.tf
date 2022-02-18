@@ -13,7 +13,11 @@ module "gitops_cp_wkc" {
 
   sccs = var.sccs
   rbac_label = var.rbac_label
-  rbac_rules = var.rbac_rules
+  rbac_rules = [{
+    apiGroups = ["security.openshift.io"]
+    resources = ["securitycontextconstraints"]
+    resourceNames = ["wkc-iis-scc"]
+    verbs = ["use"]}]
   rbac_cluster_scope = var.rbac_cluster_scope
   service_account_name = var.service_account_name
 }
