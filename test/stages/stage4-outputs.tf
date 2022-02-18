@@ -10,6 +10,7 @@ resource null_resource write_outputs {
         sub_chart           = module.gitops_cp_wkc.sub_chart
         sub_name            = module.gitops_cp_wkc.sub_name
         operator_namespace  = module.gitops_cp_wkc.operator_namespace
+        cpd_namespace       = module.gitops_cp_wkc.cpd_namespace
         branch              = module.gitops_cp_wkc.branch
         namespace           = module.gitops_cp_wkc.namespace
         server_name         = module.gitops_cp_wkc.server_name

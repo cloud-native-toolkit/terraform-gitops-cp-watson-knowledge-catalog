@@ -1,37 +1,34 @@
 locals {
-  name          = "terraform-gitops-cp-watson-knowledge-catalog"
+  name          = "ibm-cpd-wkc-instance"
   bin_dir       = module.setup_clis.bin_dir
   prerequisites_name = "ibm-cpd-wkc-prereqs"
-  prerequisites_chart_dir = "${path.module}/charts/${local.prerequisites_name}"
-  prerequisites_yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/${local.prerequisites_name}"
+  prerequisites_yaml_dir = "${path.cwd}/.tmp/${local.name}/chart/${local.prerequisites_name}"
   subscription_name = "ibm-cpd-wkc-subscription"
-  subscription_chart_dir = "${path.module}/charts/${local.subscription_name}"
-  subscription_yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/${local.subscription_name}"
-  instance_name = "ibm-cpd-wkc-instance"
-  instance_chart_dir = "${path.module}/charts/${local.instance_name}"
-  instance_yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/${local.instance_name}"
+  subscription_yaml_dir = "${path.cwd}/.tmp/${local.name}/chart/${local.subscription_name}"
+  instance_yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
   service_url   = "http://${local.name}.${var.namespace}"
 
   subscription_content = {
-    name = "ibm-cpd-wkc-subscription"
-    operator_namespace = var.namespace
+    name = "ibm-cpd-wkc-operator-catalog-subscription"
+    operator_namespace = var.operator_namespace
     syncwave = "-5"
     channel = "v1.0"
     installPlan = "Automatic"
   }
 
   instance_content = {
-    cpd_namespace = "cpd-instance"
+    cpd_namespace = var.cpd_namespace
     name = "wkc-cr"
     version = "4.0.5"
     license = "Enterprise"
-    storageVendor = "Portworx"
+    storageVendor = "portworx"
     wkc_set_kernel_params = "True"
     iis_set_kernel_params = "True"
   }
 
   layer = "services"
-  type  = "operators"
+  operator_type  = "operators"
+  type = "instances"
   application_branch = "main"
   namespace = var.namespace
   layer_config = var.gitops_config[local.layer]
@@ -42,18 +39,8 @@ module setup_clis {
 }
 
 resource null_resource create_prerequisites_yaml {
-
-  triggers = {
-    name = local.prerequisites_name
-    chart_dir = local.prerequisites_chart_dir
-    yaml_dir = local.prerequisites_yaml_dir
-  }
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create-yaml.sh '${self.triggers.name}' '${self.triggers.chart_dir}' '${self.triggers.yaml_dir}'"
-
-    environment = {
-      VALUES_CONTENT = yamlencode(local.subscription_content)
-    }
+    command = "${path.module}/scripts/create-yaml.sh '${local.prerequisites_name}' '${local.prerequisites_yaml_dir}'"
   }
 }
 
@@ -66,7 +53,7 @@ resource null_resource setup_prerequisites_gitops {
     yaml_dir = local.prerequisites_yaml_dir
     server_name = var.server_name
     layer = local.layer
-    type = local.type
+    type = local.operator_type
     git_credentials = yamlencode(var.git_credentials)
     gitops_config   = yamlencode(var.gitops_config)
     bin_dir = local.bin_dir
@@ -99,7 +86,7 @@ module "gitops_sccs" {
 
   gitops_config = var.gitops_config
   git_credentials = var.git_credentials
-  namespace = var.namespace
+  namespace = var.cpd_namespace
   service_account = var.service_account_name
   sccs = var.sccs
   server_name = var.server_name
@@ -122,14 +109,8 @@ module "gitops_rbac" {
 }
 
 resource null_resource create_operator_yaml {
-
-  triggers = {
-    name = local.subscription_name
-    chart_dir = local.subscription_chart_dir
-    yaml_dir = local.subscription_yaml_dir
-  }
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create-yaml.sh '${self.triggers.name}' '${self.triggers.chart_dir}' '${self.triggers.yaml_dir}'"
+    command = "${path.module}/scripts/create-yaml.sh '${local.subscription_name}' '${local.subscription_yaml_dir}'"
 
     environment = {
       VALUES_CONTENT = yamlencode(local.subscription_content)
@@ -146,7 +127,7 @@ resource null_resource setup_operator_gitops {
     yaml_dir = local.subscription_yaml_dir
     server_name = var.server_name
     layer = local.layer
-    type = local.type
+    type = local.operator_type
     git_credentials = yamlencode(var.git_credentials)
     gitops_config   = yamlencode(var.gitops_config)
     bin_dir = local.bin_dir
@@ -173,14 +154,8 @@ resource null_resource setup_operator_gitops {
 }
 
 resource null_resource create_instance_yaml {
-
-  triggers = {
-    name = local.instance_name
-    chart_dir = local.instance_chart_dir
-    yaml_dir = local.instance_yaml_dir
-  }
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create-yaml.sh '${self.triggers.name}' '${self.triggers.chart_dir}' '${self.triggers.yaml_dir}'"
+    command = "${path.module}/scripts/create-yaml.sh '${local.name}' '${local.instance_yaml_dir}' "
 
     environment = {
       VALUES_CONTENT = yamlencode(local.instance_content)
@@ -192,9 +167,9 @@ resource null_resource setup_instance_gitops {
   depends_on = [null_resource.create_instance_yaml]
 
   triggers = {
-    name = local.instance_name
+    name = local.name
     namespace = var.namespace
-    yaml_dir = local.instance_chart_dir
+    yaml_dir = local.instance_yaml_dir
     server_name = var.server_name
     layer = local.layer
     type = local.type

@@ -12,13 +12,13 @@ output "instance_name" {
 }
 
 output "sub_chart" {
-  description = "The name of the Watson Machine Learning chart"
+  description = "The name of the Watson Knowledge Catalog chart"
   value       = local.subscription_name
   depends_on  = [null_resource.setup_instance_gitops]
 }
 
 output "sub_name" {
-  description = "The name of the Watson Machine Learning subscription"
+  description = "The name of the Watson Knowledge Catalog subscription"
   value       = local.subscription_content.name
   depends_on  = [null_resource.setup_instance_gitops]
 }

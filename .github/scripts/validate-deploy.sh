@@ -5,12 +5,11 @@ GIT_TOKEN=$(cat git_token)
 
 export KUBECONFIG=$(cat .kubeconfig)
 NAMESPACE=$(cat .namespace)
-SUBSCRIPTION_CHART=$(jq -r '.sub_chart // "sub_chart"' gitops-output.json)
+COMPONENT_NAME=$(jq -r '.name // "my-module"' gitops-output.json)
 SUBSCRIPTION_NAME=$(jq -r '.sub_name // "sub_name"' gitops-output.json)
 INSTANCE_NAME=$(jq -r '.instance_name // "instance_name"' gitops-output.json)
 OPERATOR_NAMESPACE=$(jq -r '.operator_namespace // "operator_namespace"' gitops-output.json)
 CPD_NAMESPACE=$(jq -r '.cpd_namespace // "cpd_namespace"' gitops-output.json)
-COMPONENT_NAME=$(jq -r '.name // "my-module"' gitops-output.json)
 BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
 SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
 LAYER=$(jq -r '.layer_dir // "2-services"' gitops-output.json)
@@ -55,18 +54,25 @@ else
   sleep 30
 fi
 
-CSV=$(kubectl get sub -n ${NAMESPACE} ${SUBSCRIPTION_NAME} -o jsonpath='{.status.installedCSV} {"\n"}')
+echo "CP4D Operators namespace : "${OPERATOR_NAMESPACE}""
+echo "CP4D namespace : "${CPD_NAMESPACE}""
+
+sleep 30
+
+CSV=$(kubectl get sub -n "${OPERATOR_NAMESPACE}" "${SUBSCRIPTION_NAME}" -o jsonpath='{.status.installedCSV} {"\n"}')
+echo "Found CSV : "${CSV}""
 SUB_STATUS=0
 while [ $SUB_STATUS !=1 ]; do
   sleep 15
-  SUBSTATUS=$(kubectl get deployments -n ${NAMESPACE} -l olm.owner=${CSV} -o jsonpath="{.items[0].status.availableReplicas} {'\n'}")
-  echo "Waiting for subscription ${SUBSCRIPTION_NAME} to be ready in ${OPERATOR_NAMESPACE}"
+  SUBSTATUS=$(kubectl get deployments -n "${OPERATOR_NAMESPACE}" -l olm.owner="${CSV}" -o jsonpath="{.items[0].status.availableReplicas} {'\n'}")
+  echo "Waiting for subscription "${SUBSCRIPTION_NAME}" to be ready in "${OPERATOR_NAMESPACE}""
 done
 
+echo "WML Operator is READY"
 sleep 30
-INSTANCE_STATUS=$(kubectl get WKC ${INSTANCE_NAME} -o jsonpath='{.status.wkcStatus} {"\n"}')
+INSTANCE_STATUS=$(kubectl get WKC "${INSTANCE_NAME}" -n "${CPD_NAMESPACE}" -o jsonpath='{.status.wkcStatus} {"\n"}')
 
-echo "Watson Knowledge Catalog WKC/${INSTANCE_NAME} is ${INSTANCE_STATUS}"
+echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}"" is "${INSTANCE_STATUS}""
 
 cd ..
 rm -rf .testrepo
