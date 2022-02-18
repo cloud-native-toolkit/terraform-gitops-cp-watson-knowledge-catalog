@@ -127,7 +127,7 @@ variable "rbac_rules" {
   default     = [{
     apiGroups = ["security.openshift.io"]
     resources = ["securitycontextconstraints"]
-    resourceNames = [var.cpd_namespace + "-" + var.service_account_name + "-" + var.sccs]
+    resourceNames = ["gitops-cp4d-instance-wkc-iis-sa-anyuid"]  #"${NAMESPACE}-${SERVICE_ACCOUNT_NAME}-${sccs}"
     verbs = ["use"]
   }]
 }
