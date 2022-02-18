@@ -72,7 +72,7 @@ echo "WML Operator is READY"
 sleep 30
 INSTANCE_STATUS=$(kubectl get WKC "${INSTANCE_NAME}" -n "${CPD_NAMESPACE}" -o jsonpath='{.status.wkcStatus} {"\n"}')
 
-echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}"" is "${INSTANCE_STATUS}""
+echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}" is "${INSTANCE_STATUS}""
 
 cd ..
 rm -rf .testrepo
