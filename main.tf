@@ -54,7 +54,7 @@ module "gitops_sccs" {
 module "gitops_rbac" {
   source = "github.com/cloud-native-toolkit/terraform-gitops-rbac.git?ref=v1.7.1"
 
-  depends_on = [gitops_sccs]
+  #depends_on = [gitops_sccs]
 
   gitops_config             = var.gitops_config
   git_credentials           = var.git_credentials
@@ -69,7 +69,7 @@ module "gitops_rbac" {
 
 resource null_resource create_operator_yaml {
 
-  depends_on = [gitops_rbac]
+  #depends_on = [gitops_rbac]
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/create-yaml.sh '${local.subscription_name}' '${local.subscription_yaml_dir}'"
