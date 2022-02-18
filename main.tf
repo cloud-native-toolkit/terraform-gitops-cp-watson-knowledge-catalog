@@ -82,7 +82,7 @@ resource null_resource setup_prerequisites_gitops {
 module "gitops_sccs" {
   source = "github.com/cloud-native-toolkit/terraform-gitops-sccs.git?ref=v1.2.3"
 
-  depends_on = [null_resource.setup_prerequisites_gitops]
+  #depends_on = [null_resource.setup_prerequisites_gitops]
 
   gitops_config = var.gitops_config
   git_credentials = var.git_credentials
@@ -94,7 +94,8 @@ module "gitops_sccs" {
 
 module "gitops_rbac" {
   source = "github.com/cloud-native-toolkit/terraform-gitops-rbac.git?ref=v1.7.1"
-  depends_on = [null_resource.setup_prerequisites_gitops]
+
+  #depends_on = [null_resource.setup_prerequisites_gitops]
 
   gitops_config             = var.gitops_config
   git_credentials           = var.git_credentials
