@@ -90,7 +90,6 @@ module "gitops_sccs" {
   service_account = var.service_account_name
   sccs = var.sccs
   server_name = var.server_name
-  group = var.scc_group
 }
 
 module "gitops_rbac" {
