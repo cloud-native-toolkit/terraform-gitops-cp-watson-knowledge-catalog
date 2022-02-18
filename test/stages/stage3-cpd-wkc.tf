@@ -10,4 +10,10 @@ module "gitops_cp_wkc" {
   #cpd_namespace = module.gitops_cp4d_instance.namespace
   operator_namespace = "cpd-operators"
   cpd_namespace = "gitops-cp4d-instance"
+
+  sccs = var.sccs
+  rbac_label = var.rbac_label
+  rbac_rules = var.rbac_rules
+  rbac_cluster_scope = var.rbac_cluster_scope
+  service_account_name = var.service_account_name
 }

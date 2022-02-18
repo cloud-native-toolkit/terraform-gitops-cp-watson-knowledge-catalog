@@ -98,7 +98,7 @@ variable "cpd_namespace" {
   default     = "gitops-cp4d-instance"
 }
 
-variable "scc_group" {
+variable "sccs" {
   type        = list(string)
   description = "The list of sccs that should be generated for the service account (valid values are anyuid and privileged)"
   default     = ["anyuid"]
