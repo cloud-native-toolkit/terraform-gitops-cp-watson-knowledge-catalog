@@ -16,7 +16,7 @@ module "gitops_cp_wkc" {
   rbac_rules = [{
     apiGroups = ["security.openshift.io"]
     resources = ["securitycontextconstraints"]
-    resourceNames = ["wkc-iis-scc"]
+    resourceNames = ["gitops-cp4d-instance-wkc-iis-sa-anyuid"]  #"${NAMESPACE}-${SERVICE_ACCOUNT_NAME}-${sccs}"
     verbs = ["use"]}]
   rbac_cluster_scope = var.rbac_cluster_scope
   service_account_name = var.service_account_name

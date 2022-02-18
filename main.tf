@@ -38,47 +38,6 @@ module setup_clis {
   source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
 }
 
-/*resource null_resource create_prerequisites_yaml {
-  provisioner "local-exec" {
-    command = "${path.module}/scripts/create-yaml.sh '${local.prerequisites_name}' '${local.prerequisites_yaml_dir}'"
-  }
-}
-
-resource null_resource setup_prerequisites_gitops {
-  depends_on = [null_resource.create_prerequisites_yaml]
-
-  triggers = {
-    name = local.prerequisites_name
-    namespace = var.namespace
-    yaml_dir = local.prerequisites_yaml_dir
-    server_name = var.server_name
-    layer = local.layer
-    type = local.operator_type
-    git_credentials = yamlencode(var.git_credentials)
-    gitops_config   = yamlencode(var.gitops_config)
-    bin_dir = local.bin_dir
-  }
-
-  provisioner "local-exec" {
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
-
-    environment = {
-      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
-      GITOPS_CONFIG   = self.triggers.gitops_config
-    }
-  }
-
-  provisioner "local-exec" {
-    when = destroy
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --delete --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
-
-    environment = {
-      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
-      GITOPS_CONFIG   = self.triggers.gitops_config
-    }
-  }
-}*/
-
 module "gitops_sccs" {
   source = "github.com/cloud-native-toolkit/terraform-gitops-sccs.git?ref=v1.2.3"
 
@@ -95,7 +54,7 @@ module "gitops_sccs" {
 module "gitops_rbac" {
   source = "github.com/cloud-native-toolkit/terraform-gitops-rbac.git?ref=v1.7.1"
 
-  #depends_on = [null_resource.setup_prerequisites_gitops]
+  depends_on = [gitops_sccs]
 
   gitops_config             = var.gitops_config
   git_credentials           = var.git_credentials
@@ -109,6 +68,9 @@ module "gitops_rbac" {
 }
 
 resource null_resource create_operator_yaml {
+
+  depends_on = [gitops_rbac]
+
   provisioner "local-exec" {
     command = "${path.module}/scripts/create-yaml.sh '${local.subscription_name}' '${local.subscription_yaml_dir}'"
 
