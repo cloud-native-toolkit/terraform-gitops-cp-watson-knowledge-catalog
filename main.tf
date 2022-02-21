@@ -28,7 +28,7 @@ locals {
 
   layer = "services"
   operator_type  = "operators"
-  infra_type = "infrastructure"
+  base_type = "base"
   type = "instances"
   application_branch = "main"
   namespace = var.namespace
@@ -54,7 +54,7 @@ resource null_resource setup_prerequisites_gitops {
     yaml_dir = local.prerequisites_yaml_dir
     server_name = var.server_name
     layer = local.layer
-    type = local.infra_type
+    type = local.base_type
     git_credentials = yamlencode(var.git_credentials)
     gitops_config   = yamlencode(var.gitops_config)
     bin_dir = local.bin_dir
