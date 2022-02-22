@@ -33,6 +33,14 @@ locals {
   application_branch = "main"
   namespace = var.namespace
   layer_config = var.gitops_config[local.layer]
+
+  rbac_name = var.cpd_namespace + "-" + var.service_account_name + "-" + var.sccs
+  rbac_rules = [{
+    apiGroups = ["security.openshift.io"]
+    resources = ["securitycontextconstraints"]
+    resourceNames = [var.rbac_name]  #"${NAMESPACE}-${SERVICE_ACCOUNT_NAME}-${sccs}"
+    verbs = ["use"]
+  }]
 }
 
 module setup_clis {
