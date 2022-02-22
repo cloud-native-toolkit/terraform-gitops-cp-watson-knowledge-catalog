@@ -38,7 +38,7 @@ locals {
   rbac_rules = [{
     apiGroups = ["security.openshift.io"]
     resources = ["securitycontextconstraints"]
-    resourceNames = [var.rbac_name]  #"${NAMESPACE}-${SERVICE_ACCOUNT_NAME}-${sccs}"
+    resourceNames = [local.rbac_name]  #"${NAMESPACE}-${SERVICE_ACCOUNT_NAME}-${sccs}"
     verbs = ["use"]
   }]
 }
@@ -112,7 +112,7 @@ module "gitops_rbac" {
   service_account_name      = var.service_account_name
   namespace                 = var.cpd_namespace
   label                     = var.rbac_label
-  rules                     = var.rbac_rules
+  rules                     = local.rbac_rules
   server_name               = var.server_name
   cluster_scope             = var.rbac_cluster_scope
 }
