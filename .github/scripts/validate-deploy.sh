@@ -65,6 +65,7 @@ SUB_STATUS=0
 while [ $SUB_STATUS !=1 ]; do
   sleep 15
   SUBSTATUS=$(kubectl get deployments -n "${OPERATOR_NAMESPACE}" -l olm.owner="${CSV}" -o jsonpath="{.items[0].status.availableReplicas} {'\n'}")
+  echo "Status of subscription "${SUBSTATUS}""
   echo "Waiting for subscription "${SUBSCRIPTION_NAME}" to be ready in "${OPERATOR_NAMESPACE}""
 done
 
