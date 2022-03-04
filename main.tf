@@ -34,8 +34,8 @@ locals {
   namespace = var.namespace
   layer_config = var.gitops_config[local.layer]
 
-  sccs = concat(${var.sccs})
-  rbac_name = "${var.cpd_namespace}-${var.service_account_name}-${local.sccs}"
+  lsccs = concat(var.sccs)
+  rbac_name = "${var.cpd_namespace}-${var.service_account_name}-${local.lsccs}"
   rbac_rules = [{
     apiGroups = ["security.openshift.io"]
     resources = ["securitycontextconstraints"]
