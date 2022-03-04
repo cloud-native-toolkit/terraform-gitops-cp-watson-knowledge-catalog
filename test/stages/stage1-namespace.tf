@@ -4,7 +4,7 @@ module "gitops_namespace" {
   git_credentials = module.gitops.git_credentials
   name = var.namespace
 }
-
+/*
 module "gitops_cs_namespace" {
   depends_on = [
     module.gitops_namespace
@@ -37,12 +37,12 @@ module "gitops_cpd_namespace" {
   name = var.cpd_namespace
   create_operator_group = false
 }
-
+*/
 resource null_resource write_namespace {
   provisioner "local-exec" {
     command = "echo -n '${module.gitops_namespace.name}' > .namespace"
   }
-  provisioner "local-exec" {
+  /*provisioner "local-exec" {
     command = "echo -n '${module.gitops_cs_namespace.name}' > .cs_namespace"
   }
   provisioner "local-exec" {
@@ -50,9 +50,9 @@ resource null_resource write_namespace {
   }
   provisioner "local-exec" {
     command = "echo -n '${module.gitops_cpd_namespace.name}' > .cpd_namespace"
-  }
+  }*/
 }
-
+/*
 module cs_pull_secret {
   depends_on = [
     module.gitops_cpd_namespace
@@ -100,3 +100,4 @@ module cpd_pull_secret {
   docker_server   = "cp.icr.io"
   secret_name     = "ibm-entitlement-key"
 }
+*/
