@@ -68,7 +68,7 @@ while [[ $SUB_STATUS -ne 1 ]]; do
   echo "Waiting for subscription "${SUBSCRIPTION_NAME}" to be ready in "${OPERATOR_NAMESPACE}""
 done
 
-echo "WML Operator is READY"
+echo "WKC Operator is READY"
 sleep 60
 INSTANCE_STATUS=$(kubectl get WKC "${INSTANCE_NAME}" -n "${CPD_NAMESPACE}" -o jsonpath='{.status.wkcStatus} {"\n"}')
 
