@@ -62,7 +62,7 @@ sleep 30
 CSV=$(kubectl get sub -n "${OPERATOR_NAMESPACE}" "${SUBSCRIPTION_NAME}" -o jsonpath='{.status.installedCSV} {"\n"}')
 echo "Found CSV : "${CSV}""
 SUB_STATUS=0
-while [ $SUB_STATUS !=1 ]; do
+while [ $SUB_STATUS != 1 ]; do
   sleep 15
   SUBSTATUS=$(kubectl get deployments -n "${OPERATOR_NAMESPACE}" -l olm.owner="${CSV}" -o jsonpath="{.items[0].status.availableReplicas} {'\n'}")
   echo "Status of subscription "${SUBSTATUS}""
@@ -70,7 +70,7 @@ while [ $SUB_STATUS !=1 ]; do
 done
 
 echo "WML Operator is READY"
-sleep 30
+sleep 60
 INSTANCE_STATUS=$(kubectl get WKC "${INSTANCE_NAME}" -n "${CPD_NAMESPACE}" -o jsonpath='{.status.wkcStatus} {"\n"}')
 
 echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}" is "${INSTANCE_STATUS}""
