@@ -80,12 +80,6 @@ variable "server_name" {
   default     = "default"
 }
 
-variable "cluster_ingress_hostname" {
-  type        = string
-  description = "Ingress hostname of the IKS cluster."
-  default     = ""
-}
-
 variable "operator_namespace" {
   type        = string
   description = "operator namespace"
@@ -97,44 +91,3 @@ variable "cpd_namespace" {
   description = "cpd namespace"
   default     = "gitops-cp4d-instance"
 }
-
-variable "service_account_name" {
-  type        = string
-  description = "The name of the service account for wkc"
-  default     = "wkc-iis-sa"
-}
-
-variable "sccs" {
-  type        = list(string)
-  description = "The list of sccs that should be generated for the service account (valid values are anyuid and privileged)"
-  default     = ["anyuid"]
-}
-
-variable "rbac_label" {
-  type        = string
-  description = "The name for RBAC rule"
-  default     = "wkc-iis-scc-rb"
-}
-
-variable "rbac_rules" {
-  type        = list(object({
-    apiGroups = list(string)
-    resources = list(string)
-    resourceNames = optional(list(string))
-    verbs     = list(string)
-  }))
-  description = "Rules for rbac rules"
-  default     = [{
-    apiGroups = ["security.openshift.io"]
-    resources = ["securitycontextconstraints"]
-    resourceNames = ["gitops-cp4d-instance-wkc-iis-sa-anyuid"]  #"${NAMESPACE}-${SERVICE_ACCOUNT_NAME}-${sccs}"
-    verbs = ["use"]
-  }]
-}
-
-variable "rbac_cluster_scope" {
-  type        = bool
-  description = "Flag indicating that RBAC should be created as ClusterRole and ClusterRoleBinding instead of Role and RoleBinding"
-  default     = true
-}
-

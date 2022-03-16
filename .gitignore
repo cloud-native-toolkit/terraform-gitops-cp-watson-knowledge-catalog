@@ -3,3 +3,6 @@
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
+.DS_Store
+chart/.DS_Store
+chart/provision-dv-instance/.DS_Store

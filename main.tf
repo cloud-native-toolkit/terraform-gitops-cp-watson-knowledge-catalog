@@ -34,8 +34,7 @@ locals {
   namespace = var.namespace
   layer_config = var.gitops_config[local.layer]
 
-  lsccs = join(", ", var.sccs)
-  rbac_name = "${var.cpd_namespace}-${var.service_account_name}-${local.lsccs}"
+  rbac_name = "${var.cpd_namespace}-wkc-iis-sa-anyuid"
   rbac_rules = [{
     apiGroups = ["security.openshift.io"]
     resources = ["securitycontextconstraints"]
@@ -97,8 +96,8 @@ module "gitops_sccs" {
   gitops_config = var.gitops_config
   git_credentials = var.git_credentials
   namespace = var.cpd_namespace
-  service_account = var.service_account_name
-  sccs = var.sccs
+  service_account = "wkc-iis-sa"
+  sccs = ["anyuid"]
   server_name = var.server_name
 }
 
@@ -110,12 +109,12 @@ module "gitops_rbac" {
   gitops_config             = var.gitops_config
   git_credentials           = var.git_credentials
   service_account_namespace = var.cpd_namespace
-  service_account_name      = var.service_account_name
+  service_account_name      = "wkc-iis-sa"
   namespace                 = var.cpd_namespace
-  label                     = var.rbac_label
+  label                     = "wkc-iis-scc-rb"
   rules                     = local.rbac_rules
   server_name               = var.server_name
-  cluster_scope             = var.rbac_cluster_scope
+  cluster_scope             = true
 }
 
 resource null_resource create_operator_yaml {
