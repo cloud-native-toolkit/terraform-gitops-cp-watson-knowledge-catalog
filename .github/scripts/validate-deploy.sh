@@ -71,10 +71,13 @@ done
 echo "WKC Operator is READY"
 sleep 60
 INSTANCE_STATUS=""
-while [[ $INSTANCE_STATUS -ne "Completed" ]]; do
-  sleep 30
+while [ true ]; do
   INSTANCE_STATUS=$(kubectl get WKC "${INSTANCE_NAME}" -n "${CPD_NAMESPACE}" -o jsonpath='{.status.wkcStatus} {"\n"}')
   echo "Waiting for instance "${INSTANCE_NAME}" to be ready. Current status : "${INSTANCE_STATUS}""
+  if [ $INSTANCE_STATUS == "Completed" ]; then
+    break
+  fi
+  sleep 30
 done
 
 echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}" is "${INSTANCE_STATUS}""
