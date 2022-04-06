@@ -2,7 +2,7 @@
 #  source = "github.com/cloud-native-toolkit/terraform-gitops-cp4d-operator.git"
 #
 #  depends_on = [
-#    module.gitops_ibm_catalogs
+#    module.gitops_cp_foundation
 #  ]
 #
 #  gitops_config = module.gitops.gitops_config
