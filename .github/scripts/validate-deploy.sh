@@ -57,10 +57,25 @@ fi
 echo "CP4D Operators namespace : "${OPERATOR_NAMESPACE}""
 echo "CP4D namespace : "${CPD_NAMESPACE}""
 
-sleep 30
+CSV=""
+count=0
+csvstr="ibm-cpd-wkc."
+while [ true ]; do
+  sleep 60
+  CSV=$(kubectl get sub -n "${OPERATOR_NAMESPACE}" "${SUBSCRIPTION_NAME}" -o jsonpath='{.status.installedCSV} {"\n"}')
+  echo "Found CSV : "${CSV}""
+  count=$((count + 1))
+  if [[ $CSV == *"$csvstr"* ]];
+  then
+      echo "Found CSV : "${CSV}""
+      break
+  fi
+  if [[ $count -eq 120 ]]; then
+    echo "Timed out waiting for CSV"
+    exit 1
+  fi
+done
 
-CSV=$(kubectl get sub -n "${OPERATOR_NAMESPACE}" "${SUBSCRIPTION_NAME}" -o jsonpath='{.status.installedCSV} {"\n"}')
-echo "Found CSV : "${CSV}""
 SUB_STATUS=0
 while [[ $SUB_STATUS -ne 1 ]]; do
   sleep 10
