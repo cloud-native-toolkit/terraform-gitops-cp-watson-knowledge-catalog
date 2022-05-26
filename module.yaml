@@ -1,4 +1,4 @@
-name: gitops-cp-watson-knowledge-catalog
+name: gitops-cp-wkc
 type: gitops
 description: >-
   Module to populate a gitops repo with the resources to provision Watson Knowledge Catalong on Cloud Pak for Data

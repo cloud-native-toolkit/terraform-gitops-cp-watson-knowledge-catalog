@@ -91,3 +91,51 @@ variable "cpd_namespace" {
   description = "cpd namespace"
   default     = "gitops-cp4d-instance"
 }
+
+variable "operator_channel" {
+  type        = string
+  description = "operator channel"
+  default     = "v1.1"
+}
+
+variable "instance_version" {
+  type        = string
+  description = "Instance version"
+  default     = "4.0.8"
+}
+
+variable "license" {
+  type        = string
+  description = "License type"
+  default     = "Enterprise"
+}
+
+variable "storage_class" {
+  type        = string
+  description = "Storage class for the instance"
+  default     = "portworx-shared-gp3"
+}
+
+variable "storage_vendor" {
+  type        = string
+  description = "Storage vendor for the instance"
+  default     = "portworx"
+}
+
+variable "install_plan" {
+  type        = string
+  description = "install plan"
+  default     = "Automatic"
+}
+
+variable "wkc_set_kernel_params" {
+  type        = string
+  description = "WKC Set Kernel Parameters"
+  default     = "True"
+}
+
+variable "iis_set_kernel_params" {
+  type        = string
+  description = "IIS Set Kernel Parameters"
+  default     = "True"
+}

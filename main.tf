@@ -12,18 +12,18 @@ locals {
     name = "ibm-cpd-wkc-operator-catalog-subscription"
     operator_namespace = var.operator_namespace
     syncwave = "-5"
-    channel = "v1.0"
-    installPlan = "Automatic"
+    channel = var.operator_channel
+    installPlan = var.install_plan
   }
 
   instance_content = {
     cpd_namespace = var.cpd_namespace
     name = "wkc-cr"
-    version = "4.0.5"
-    license = "Enterprise"
-    storageVendor = "portworx"
-    wkc_set_kernel_params = "True"
-    iis_set_kernel_params = "True"
+    version = var.instance_version
+    license = var.license
+    storageVendor = var.storage_vendor
+    wkc_set_kernel_params = var.wkc_set_kernel_params
+    iis_set_kernel_params = var.iis_set_kernel_params
   }
 
   layer = "services"
@@ -165,7 +165,7 @@ resource null_resource setup_operator_gitops {
 }
 
 resource null_resource create_instance_yaml {
-  depends_on = [null_resource.setup_prerequisites_gitops]
+  depends_on = [null_resource.setup_operator_gitops]
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/create-yaml.sh '${local.name}' '${local.instance_yaml_dir}' "

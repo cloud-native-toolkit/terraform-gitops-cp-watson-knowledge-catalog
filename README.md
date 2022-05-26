@@ -39,7 +39,7 @@ This module makes use of the output from other modules:
 
 ```hcl-terraform
 module "gitops_cp_wkc" {
-  source = "https://github.com/cloud-native-toolkit/terraform-gitops-cp-watson-knowledge-catalog.git"
+  source = "https://github.com/cloud-native-toolkit/terraform-gitops-cp-wkc.git"
 
   gitops_config = module.gitops.gitops_config
   git_credentials = module.gitops.git_credentials
