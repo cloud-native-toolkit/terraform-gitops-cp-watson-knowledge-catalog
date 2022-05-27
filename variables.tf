@@ -95,7 +95,7 @@ variable "cpd_namespace" {
 variable "operator_channel" {
   type        = string
   description = "operator channel"
-  default     = "v1.1"
+  default     = "v1.0"
 }
 
 variable "instance_version" {
