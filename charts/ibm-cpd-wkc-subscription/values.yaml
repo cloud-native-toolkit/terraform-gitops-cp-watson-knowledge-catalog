@@ -1,0 +1,5 @@
+name: ibm-cpd-wkc-operator-catalog-subscription
+operator_namespace: cpd-operators
+syncWave: "-5"
+channel: v1.0
+installPlan: Automatic

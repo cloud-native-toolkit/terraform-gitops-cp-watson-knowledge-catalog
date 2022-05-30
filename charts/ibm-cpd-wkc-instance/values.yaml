@@ -1,0 +1,7 @@
+name: wkc-cr
+cpd_namespace: gitops-cp4d-instance
+license: Enterprise
+version: 4.0.8
+storageVendor: portworx
+wkc_set_kernel_params: True
+iis_set_kernel_params: True

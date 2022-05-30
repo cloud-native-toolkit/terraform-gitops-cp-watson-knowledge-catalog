@@ -1,0 +1,17 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    app.kubernetes.io/instance:  {{ .Values.name }}
+    app.kubernetes.io/managed-by: ibm-cpd-wkc-operator
+    app.kubernetes.io/name:  {{ .Values.name }}
+  name: {{ .Values.name }}
+  namespace: {{ .Values.operator_namespace }}    # Pick the project that contains the Cloud Pak for Data operator
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.syncwave | default "-5" | quote }}
+spec:
+    channel: {{ .Values.channel }}
+    installPlanApproval: {{ .Values.installPlan }}
+    name: ibm-cpd-wkc
+    source: ibm-operator-catalog
+    sourceNamespace: openshift-marketplace

@@ -1,11 +1,12 @@
-name: gitops-cp-watson-knowledge-catalog
+name: gitops-cp-wkc
 type: gitops
 description: >-
-  Module to populate a gitops repo with the resources to provision
-  cp-watson-knowledge-catalog
+  Module to populate a gitops repo with the resources to provision Watson Knowledge Catalong on Cloud Pak for Data
 tags:
   - tools
   - gitops
+  - wkc
+  - cloud pak for data
 versions:
   - platforms:
       - kubernetes

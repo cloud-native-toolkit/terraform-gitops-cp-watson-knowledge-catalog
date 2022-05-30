@@ -6,6 +6,10 @@ GIT_TOKEN=$(cat git_token)
 export KUBECONFIG=$(cat .kubeconfig)
 NAMESPACE=$(cat .namespace)
 COMPONENT_NAME=$(jq -r '.name // "my-module"' gitops-output.json)
+SUBSCRIPTION_NAME=$(jq -r '.sub_name // "sub_name"' gitops-output.json)
+INSTANCE_NAME=$(jq -r '.instance_name // "instance_name"' gitops-output.json)
+OPERATOR_NAMESPACE=$(jq -r '.operator_namespace // "operator_namespace"' gitops-output.json)
+CPD_NAMESPACE=$(jq -r '.cpd_namespace // "cpd_namespace"' gitops-output.json)
 BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
 SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
 LAYER=$(jq -r '.layer_dir // "2-services"' gitops-output.json)
@@ -50,21 +54,48 @@ else
   sleep 30
 fi
 
-DEPLOYMENT="${COMPONENT_NAME}-${BRANCH}"
+echo "CP4D Operators namespace : "${OPERATOR_NAMESPACE}""
+echo "CP4D namespace : "${CPD_NAMESPACE}""
+
+CSV=""
 count=0
-until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
-  echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
+csvstr="ibm-cpd-wkc."
+while [ true ]; do
+  sleep 60
+  CSV=$(kubectl get sub -n "${OPERATOR_NAMESPACE}" "${SUBSCRIPTION_NAME}" -o jsonpath='{.status.installedCSV} {"\n"}')
+  echo "Found CSV : "${CSV}""
   count=$((count + 1))
-  sleep 15
+  if [[ $CSV == *"$csvstr"* ]];
+  then
+      echo "Found CSV : "${CSV}""
+      break
+  fi
+  if [[ $count -eq 120 ]]; then
+    echo "Timed out waiting for CSV"
+    exit 1
+  fi
 done
 
-if [[ $count -eq 20 ]]; then
-  echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
-  kubectl get all -n "${NAMESPACE}"
-  exit 1
-fi
+SUB_STATUS=0
+while [[ $SUB_STATUS -ne 1 ]]; do
+  sleep 10
+  SUB_STATUS=$(kubectl get deployments -n "${OPERATOR_NAMESPACE}" -l olm.owner="${CSV}" -o jsonpath="{.items[0].status.availableReplicas} {'\n'}")
+  echo "Waiting for subscription "${SUBSCRIPTION_NAME}" to be ready in "${OPERATOR_NAMESPACE}""
+done
 
-kubectl rollout status "deployment/${DEPLOYMENT}" -n "${NAMESPACE}" || exit 1
+echo "WKC Operator is READY"
+sleep 60
+INSTANCE_STATUS=""
+while [ true ]; do
+  INSTANCE_STATUS=$(kubectl get WKC "${INSTANCE_NAME}" -n "${CPD_NAMESPACE}" -o jsonpath='{.status.wkcStatus} {"\n"}')
+  echo "Waiting for instance "${INSTANCE_NAME}" to be ready. Current status : "${INSTANCE_STATUS}""
+  if [ $INSTANCE_STATUS == "Completed" ]; then
+    break
+  fi
+  sleep 30
+done
+
+echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}" is "${INSTANCE_STATUS}""
 
 cd ..
 rm -rf .testrepo
