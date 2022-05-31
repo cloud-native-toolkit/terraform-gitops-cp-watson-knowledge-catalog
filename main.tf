@@ -11,7 +11,7 @@ locals {
   subscription_content = {
     name = "ibm-cpd-wkc-operator-catalog-subscription"
     operator_namespace = var.operator_namespace
-    syncwave = "-5"
+    syncwave = var.sub_syncwave
     channel = var.operator_channel
     installPlan = var.install_plan
   }
@@ -21,6 +21,7 @@ locals {
     name = "wkc-cr"
     version = var.instance_version
     license = var.license
+    syncwave = var.inst_syncwave
     storageVendor = var.storage_vendor
     wkc_set_kernel_params = var.wkc_set_kernel_params
     iis_set_kernel_params = var.iis_set_kernel_params

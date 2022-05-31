@@ -139,3 +139,15 @@ variable "iis_set_kernel_params" {
   description = "IIS Set Kernel Parameters"
   default     = "True"
 }
+
+variable "sub_syncwave" {
+  type        = string
+  description = "Sync Wave"
+  default     = "-5"
+}
+
+variable "inst_syncwave" {
+  type        = string
+  description = "Sync Wave"
+  default     = "-3"
+}
