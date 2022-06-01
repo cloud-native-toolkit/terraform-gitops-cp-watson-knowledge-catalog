@@ -3,6 +3,8 @@ kind: WKC
 metadata:
   name: {{ .Values.name }}     # This is the recommended name, but you can change it
   namespace: {{ .Values.cpd_namespace }}     # Replace with the project where you will install Watson Knowledge Catalog
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.syncwave | default "-3" | quote }}
 spec:
   license:
     accept: true
