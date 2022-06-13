@@ -99,19 +99,19 @@ echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}" is "${INSTANCE_STATUS}""
 
 #Cleanup WKC
 echo "Cleaning up UG"
-UGCR=$(oc get ug "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
+UGCR=$(oc get ug -n "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
 oc patch ug $UGCR -n "${CPD_NAMESPACE}" -p '{"metadata":{"finalizers":[]}}' --type=merge
 oc delete ug -n "${CPD_NAMESPACE}" $UGCR
 
-UGCRD=$(oc get crd "${CPD_NAMESPACE}" --no-headers | grep ug.wkc | awk '{print $1}')
+UGCRD=$(oc get crd -n "${CPD_NAMESPACE}" --no-headers | grep ug.wkc | awk '{print $1}')
 oc delete crd -n "${CPD_NAMESPACE}" $UGCRD
 
 echo "Cleaning up IIS"
-IISCR=$(oc get iis "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
+IISCR=$(oc get iis -n "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
 oc patch iis $IISCR -n "${CPD_NAMESPACE}" -p '{"metadata":{"finalizers":[]}}' --type=merge
 oc delete iis -n "${CPD_NAMESPACE}" $IISCR
 
-IISCRD=$(oc get crd "${CPD_NAMESPACE}" --no-headers | grep iis | awk '{print $1}')
+IISCRD=$(oc get crd -n "${CPD_NAMESPACE}" --no-headers | grep iis | awk '{print $1}')
 oc delete crd -n "${CPD_NAMESPACE}" $IISCRD
 
 oc delete sub ibm-cpd-iis-operator -n "${OPERATOR_NAMESPACE}"
@@ -125,11 +125,11 @@ oc delete operandrequests $DB2OR -n "${CPD_NAMESPACE}"
 oc delete catsrc ibm-cpd-iis-operator-catalog -n openshift-marketplace
 
 echo "Cleaning up WKC"
-WKCCR=$(oc get wkc "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
+WKCCR=$(oc get wkc -n "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
 oc patch wkc $WKCCR -n "${CPD_NAMESPACE}" -p '{"metadata":{"finalizers":[]}}' --type=merge
 oc delete wlc -n "${CPD_NAMESPACE}" $WKCCR
 
-WKCCRD=$(oc get crd "${CPD_NAMESPACE}" --no-headers | grep wkc.wkc | awk '{print $1}')
+WKCCRD=$(oc get crd -n "${CPD_NAMESPACE}" --no-headers | grep wkc.wkc | awk '{print $1}')
 oc delete crd -n "${CPD_NAMESPACE}" $WKCCRD
 
 oc delete sub "${SUBSCRIPTION_NAME}" -n "${OPERATOR_NAMESPACE}"
