@@ -97,5 +97,61 @@ done
 
 echo "Watson Knowledge Catalog WKC/"${INSTANCE_NAME}" is "${INSTANCE_STATUS}""
 
+#Cleanup WKC
+echo "Cleaning up UG"
+UGCR=$(oc get ug "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
+oc patch ug $UGCR -n "${CPD_NAMESPACE}" -p '{"metadata":{"finalizers":[]}}' --type=merge
+oc delete ug -n "${CPD_NAMESPACE}" $UGCR
+
+UGCRD=$(oc get crd "${CPD_NAMESPACE}" --no-headers | grep ug.wkc | awk '{print $1}')
+oc delete crd -n "${CPD_NAMESPACE}" $UGCRD
+
+echo "Cleaning up IIS"
+IISCR=$(oc get iis "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
+oc patch iis $IISCR -n "${CPD_NAMESPACE}" -p '{"metadata":{"finalizers":[]}}' --type=merge
+oc delete iis -n "${CPD_NAMESPACE}" $IISCR
+
+IISCRD=$(oc get crd "${CPD_NAMESPACE}" --no-headers | grep iis | awk '{print $1}')
+oc delete crd -n "${CPD_NAMESPACE}" $IISCRD
+
+oc delete sub ibm-cpd-iis-operator -n "${OPERATOR_NAMESPACE}"
+
+IISCSV=$(oc get csv -n "${OPERATOR_NAMESPACE}" --no-headers | grep ibm-cpd-iis | awk '{print $1}')
+oc delete csv $IISCSV -n "${OPERATOR_NAMESPACE}"
+
+DB2OR=$(oc get operandrequests -n "${CPD_NAMESPACE}" --no-headers | grep iis-requests-db2uaas | awk '{print $1}')
+oc delete operandrequests $DB2OR -n "${CPD_NAMESPACE}"
+
+oc delete catsrc ibm-cpd-iis-operator-catalog -n openshift-marketplace
+
+echo "Cleaning up WKC"
+WKCCR=$(oc get wkc "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
+oc patch wkc $WKCCR -n "${CPD_NAMESPACE}" -p '{"metadata":{"finalizers":[]}}' --type=merge
+oc delete wlc -n "${CPD_NAMESPACE}" $WKCCR
+
+WKCCRD=$(oc get crd "${CPD_NAMESPACE}" --no-headers | grep wkc.wkc | awk '{print $1}')
+oc delete crd -n "${CPD_NAMESPACE}" $WKCCRD
+
+oc delete sub "${SUBSCRIPTION_NAME}" -n "${OPERATOR_NAMESPACE}"
+
+WKCCSV=$(oc get csv -n "${OPERATOR_NAMESPACE}" --no-headers | grep wkc | awk '{print $1}')
+oc delete csv $WKCCSV -n "${OPERATOR_NAMESPACE}"
+
+echo "Cleaning up operandrequests"
+$ORCERT=$(oc get operandrequests -n "${CPD_NAMESPACE}" --no-headers | grep cert-mgr-dep | awk '{print $1}')
+oc delete operandrequest $ORCERT -n "${CPD_NAMESPACE}"
+oc delete operandrequest wkc-requests-ccs -n "${CPD_NAMESPACE}"
+oc delete operandrequest wkc-requests-datarefinery -n "${CPD_NAMESPACE}"
+oc delete operandrequest wkc-requests-db2uaas -n "${CPD_NAMESPACE}"
+oc delete operandrequest wkc-requests-iis -n "${CPD_NAMESPACE}"
+
+oc delete catsrc ibm-cpd-wkc-operator-catalog -n openshift-marketplace
+
+echo "Cleaning up installplan"
+WKCIP=$(oc get ip -n "${OPERATOR_NAMESPACE}" --no-headers | grep wkc | awk '{print $1}')
+IISIP=$(oc get ip -n "${OPERATOR_NAMESPACE}" --no-headers | grep iis | awk '{print $1}')
+oc delete ip $WKCIP -n "${OPERATOR_NAMESPACE}"
+oc delete ip $IISIP -n "${OPERATOR_NAMESPACE}"
+
 cd ..
 rm -rf .testrepo
