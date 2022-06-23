@@ -94,5 +94,5 @@ variable "cpd_operator_namespace" {
 variable "cpd_namespace" {
   type        = string
   description = "Namespace for cpd services"
-  default = "gitops-cp4d-instance"
+  default = "cp4d"
 }

@@ -1,5 +1,5 @@
 name: wkc-cr
-cpd_namespace: gitops-cp4d-instance
+cpd_namespace: cp4d
 license: Enterprise
 version: 4.0.8
 syncWave: "-3"
