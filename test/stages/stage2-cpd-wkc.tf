@@ -9,5 +9,5 @@ module "gitops_cp_wkc" {
   #operator_namespace = module.gitops_cp4d_operator.namespace
   #cpd_namespace = module.gitops_cp4d_instance.namespace
   operator_namespace = "cpd-operators"
-  cpd_namespace = "gitops-cp4d-instance"
+  cpd_namespace = "cp4d"
 }

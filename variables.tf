@@ -89,7 +89,7 @@ variable "operator_namespace" {
 variable "cpd_namespace" {
   type        = string
   description = "cpd namespace"
-  default     = "gitops-cp4d-instance"
+  default     = "cp4d"
 }
 
 variable "operator_channel" {
@@ -101,7 +101,7 @@ variable "operator_channel" {
 variable "instance_version" {
   type        = string
   description = "Instance version"
-  default     = "4.0.8"
+  default     = "4.0.9"
 }
 
 variable "license" {
