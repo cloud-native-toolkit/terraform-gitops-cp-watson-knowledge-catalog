@@ -127,7 +127,7 @@ oc delete catsrc ibm-cpd-iis-operator-catalog -n openshift-marketplace
 echo "Cleaning up WKC"
 WKCCR=$(oc get wkc -n "${CPD_NAMESPACE}" --no-headers | awk '{print $1}')
 oc patch wkc $WKCCR -n "${CPD_NAMESPACE}" -p '{"metadata":{"finalizers":[]}}' --type=merge
-oc delete wlc -n "${CPD_NAMESPACE}" $WKCCR
+oc delete wkc -n "${CPD_NAMESPACE}" $WKCCR
 
 WKCCRD=$(oc get crd -n "${CPD_NAMESPACE}" --no-headers | grep wkc.wkc | awk '{print $1}')
 oc delete crd -n "${CPD_NAMESPACE}" $WKCCRD
@@ -138,7 +138,7 @@ WKCCSV=$(oc get csv -n "${OPERATOR_NAMESPACE}" --no-headers | grep wkc | awk '{p
 oc delete csv $WKCCSV -n "${OPERATOR_NAMESPACE}"
 
 echo "Cleaning up operandrequests"
-$ORCERT=$(oc get operandrequests -n "${CPD_NAMESPACE}" --no-headers | grep cert-mgr-dep | awk '{print $1}')
+ORCERT=$(oc get operandrequests -n "${CPD_NAMESPACE}" --no-headers | grep cert-mgr-dep | awk '{print $1}')
 oc delete operandrequest $ORCERT -n "${CPD_NAMESPACE}"
 oc delete operandrequest wkc-requests-ccs -n "${CPD_NAMESPACE}"
 oc delete operandrequest wkc-requests-datarefinery -n "${CPD_NAMESPACE}"
