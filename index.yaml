@@ -118,6 +118,180 @@ versions:
       - name: cpd_namespace
         type: string
         description: cpd namespace
+        default: cp4d
+      - name: operator_channel
+        type: string
+        description: operator channel
+        default: v1.0
+      - name: instance_version
+        type: string
+        description: Instance version
+        default: 4.0.9
+      - name: license
+        type: string
+        description: License type
+        default: Enterprise
+      - name: storage_class
+        type: string
+        description: Storage class for the instance
+        default: portworx-shared-gp3
+      - name: storage_vendor
+        type: string
+        description: Storage vendor for the instance
+        default: portworx
+      - name: install_plan
+        type: string
+        description: install plan
+        default: Automatic
+      - name: wkc_set_kernel_params
+        type: string
+        description: WKC Set Kernel Parameters
+        default: 'True'
+      - name: iis_set_kernel_params
+        type: string
+        description: IIS Set Kernel Parameters
+        default: 'True'
+      - name: sub_syncwave
+        type: string
+        description: Sync Wave
+        default: '-5'
+      - name: inst_syncwave
+        type: string
+        description: Sync Wave
+        default: '-3'
+    version: v1.2.0
+    outputs:
+      - name: name
+        description: The name of the module
+      - name: instance_name
+        description: The name of the Watson Knowledge Catalog instance
+      - name: sub_chart
+        description: The name of the Watson Knowledge Catalog chart
+      - name: sub_name
+        description: The name of the Watson Knowledge Catalog subscription
+      - name: operator_namespace
+        description: The name of the operators namespace
+      - name: cpd_namespace
+        description: The name of the Cloud Pak for Data namespace
+      - name: branch
+        description: The branch where the module config has been placed
+      - name: namespace
+        description: The namespace where the module will be deployed
+      - name: server_name
+        description: The server where the module will be deployed
+      - name: layer
+        description: The layer where the module is deployed
+      - name: type
+        description: The type of module where the module is deployed
+  - platforms:
+      - kubernetes
+      - ocp3
+      - ocp4
+    dependencies:
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops.git
+            version: '>= 1.1.0'
+      - id: namespace
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-gitops-namespace.git
+            version: '>= 1.0.0'
+    variables:
+      - name: gitops_config
+        type: |-
+          object({
+              boostrap = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              infrastructure = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              services = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              applications = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+            })
+        description: Config information regarding the gitops repo structure
+        moduleRef:
+          id: gitops
+          output: gitops_config
+      - name: git_credentials
+        type: |-
+          list(object({
+              repo = string
+              url = string
+              username = string
+              token = string
+            }))
+        description: The credentials for the gitops repo(s)
+        sensitive: true
+        moduleRef:
+          id: gitops
+          output: git_credentials
+      - name: namespace
+        type: string
+        description: The namespace where the application should be deployed
+        moduleRef:
+          id: namespace
+          output: name
+      - name: kubeseal_cert
+        type: string
+        description: The certificate/public key used to encrypt the sealed secrets
+        default: ''
+        moduleRef:
+          id: gitops
+          output: sealed_secrets_cert
+      - name: server_name
+        type: string
+        description: The name of the server
+        default: default
+        moduleRef:
+          id: gitops
+          output: server_name
+      - name: operator_namespace
+        type: string
+        description: operator namespace
+        default: cpd-operators
+      - name: cpd_namespace
+        type: string
+        description: cpd namespace
         default: gitops-cp4d-instance
       - name: operator_channel
         type: string
